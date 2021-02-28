@@ -52,8 +52,35 @@ static gboolean delete_event(GtkWidget *widget, GdkEvent *event, gpointer data) 
 	return FALSE;
 }
 
-int main( int   argc, char *argv[] )
+void displayHelp() {
+	char helpMessage[] = 
+		"Usage: classE [options]\n"
+		"\n"
+		"This is a simple programm to calculate component values for class E power amplifiers.\n"
+		"\n"
+		"Options:\n"
+		"\t-h, --help\tDisplay this help message.\n"
+		"\t--no-init\tStart with empty input fields.\n";
+	g_print(helpMessage);
+}
+
+int main(int argc, char *argv[] )
 {
+	gboolean init = TRUE;
+
+	if(argc > 1) {
+		if(!g_strcmp0(argv[1], "--help") || !g_strcmp0(argv[1], "-h")) {
+			displayHelp();
+			return 0;
+		} else if (!g_strcmp0(argv[1], "--no-init")) {
+			init = FALSE;
+		} else {
+			g_print("unrecognised option '%s'\n\n", argv[1]);
+			displayHelp();
+			return(1);
+		}
+	}
+
     GtkWidget *window;
 	GtkWidget *grid;
 	GtkWidget *eValue[6];
@@ -134,7 +161,7 @@ int main( int   argc, char *argv[] )
 	gtk_grid_set_row_spacing(GTK_GRID(grid), 5);
 	gtk_grid_set_column_spacing(GTK_GRID(grid), 5);
 	
-	initValues(entries);
+	if(init) initValues(entries);
 
     gtk_widget_show_all(window);
 
